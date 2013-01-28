@@ -63,10 +63,13 @@ exports.get = function(key, checkFile) {
       exports.del(key);
     }
   }
-  if(checkFile && data = fs.readFileSync(filePath + key + '.txt')) {
+  if(checkFile) {
+    if (debug) console.log('Checking if there is a file for this cache');
+    data = fs.readFileSync(filePath + key + '.txt')
     data = JSON.parse(data);
     if (isNaN(data.expire) || data.expire >= now()) {
-      if (debug) console.log('Loading data from file');
+      if (debug) console.log('Loading data from file ' + filePath + key + '.txt');
+      exports.put(key, data.value, true);
       return data.value;
     }
   }
